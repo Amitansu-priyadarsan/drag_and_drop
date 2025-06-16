@@ -1,6 +1,5 @@
 .root {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
+  display: flex;
   align-items: center;
   padding: 4px;
   border-radius: 4px;
@@ -11,25 +10,113 @@
 }
 
 .container {
-  margin: 2px 0;
+  position: relative;
+  margin-top: 16px;
+  padding-left: 28px; /* Space for the connector */
 }
 
-.expandIconWrapper {
+.nodeWrapper {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  cursor: pointer;
+  position: relative;
 }
 
-.labelGridItem {
-  padding-left: 8px;
+/* --- Connector Lines --- */
+
+/* Horizontal line from the vertical line to the node */
+.container::before {
+  content: "";
+  position: absolute;
+  top: 20px; /* Vertically center with node box */
+  left: 8px;
+  width: 20px; /* (padding-left - dot width/2) */
+  height: 2px;
+  background-color: #dfdfe2;
+  z-index: 1;
+}
+
+/* Vertical line connecting children */
+.container::after {
+  content: "";
+  position: absolute;
+  top: -16px; /* Start from above the parent */
+  left: 8px;
+  width: 2px;
+  height: calc(100% + 16px);
+  background-color: #dfdfe2;
+  z-index: 1;
+}
+
+/* Hide connectors for root-level nodes */
+.container[style*="margin-left: 0px"]::before,
+.container[style*="margin-left: 0px"]::after {
+  display: none;
+}
+
+/* Adjust vertical line for the last child to stop at the node */
+.container.isLastChild::after {
+  height: 36px; /* (top offset + node top position) */
+}
+
+/* --- Node Styling --- */
+
+.nodeContent {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.nodeBox {
+  display: flex;
+  align-items: center;
+  border: 1px solid #dfdfe2;
+  border-radius: 8px;
+  background-color: white;
+  height: 40px;
+  width: 264px;
+  padding: 0 8px;
+  font-family: "Inter", sans-serif;
+  color: #121214;
+  font-size: 14px;
+  position: relative;
+  z-index: 2; /* Ensure node is above connector lines */
+}
+
+.nodeBox::before {
+  /* Connector dot */
+  content: "";
+  position: absolute;
+  left: -21px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ececee;
+  border: 1px solid #dfdfe2;
+  z-index: 3;
+}
+
+.toggleButton {
+  padding: 4px;
+}
+
+.nodeText {
+  flex-grow: 1;
+  padding: 0 8px;
+}
+
+.addButton {
+  margin-left: 8px;
 }
 
 .addNodeForm {
-  display: flex;
-  align-items: center;
-  margin-top: 4px;
+  margin-top: 8px;
+  padding-left: 12px;
+}
+
+.isDragging {
+  opacity: 0.5;
 }
 
 .highlight {

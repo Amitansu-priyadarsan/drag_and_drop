@@ -1,5 +1,9 @@
 .app {
-  padding: 16px;
+  padding: 28px;
+  background: white;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
   height: 100vh;
 }
 
@@ -7,9 +11,38 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  padding-bottom: 8px;
-  border-bottom: 1px dashed #ccc;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #dfdfe2;
+}
+
+.headerTitle {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+}
+
+.headerControls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nodeCountLabel {
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  color: #5d5d5e;
+}
+
+.nodeCount {
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #121214;
+}
+
+.treeContainer {
+  flex-grow: 1;
+  overflow-y: auto;
 }
 
 .treeRoot {
@@ -17,9 +50,22 @@
 }
 
 .draggingSource {
-  opacity: .3;
+  opacity: 0.3;
 }
 
 .dropTarget {
   background-color: #e8f0fe;
+}
+
+.footer {
+  padding-top: 16px;
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.footerButton {
+  text-transform: none;
+  border-radius: 8px;
 }

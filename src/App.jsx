@@ -72,39 +72,70 @@ function App() {
       <DndProvider backend={MultiBackend} options={getBackendOptions()}>
         <Box className={styles.app}>
           <Box className={styles.header}>
-            <Typography variant="h6">Hierarchy tree</Typography>
-            <Button variant="contained" onClick={handleSaveAll}>
-              Save All
+            <Typography variant="h6" className={styles.headerTitle}>
+              Hierarchy tree
+            </Typography>
+            <Box className={styles.headerControls}>
+              <Typography variant="body2" className={styles.nodeCountLabel}>
+                Groups created:
+              </Typography>
+              <Typography variant="body2" className={styles.nodeCount}>
+                {treeData.length}
+              </Typography>
+            </Box>
+          </Box>
+          <Box className={styles.treeContainer}>
+            <Tree
+              ref={treeRef}
+              tree={treeData}
+              rootId={0}
+              initialOpen
+              onDrop={handleDrop}
+              classes={{
+                root: styles.treeRoot,
+                draggingSource: styles.draggingSource,
+                dropTarget: styles.dropTarget,
+              }}
+              render={(node, { depth, isOpen, onToggle }) => {
+                const children = treeData.filter((n) => n.parent === node.parent);
+                const isLastChild = children[children.length - 1].id === node.id;
+
+                return (
+                  <CustomNode
+                    node={node}
+                    depth={depth}
+                    isOpen={isOpen}
+                    onToggle={onToggle}
+                    isAdding={addingToParent === node.id}
+                    onStartAdd={handleStartAdd}
+                    onAdd={handleAddNode}
+                    onCancelAdd={handleCancelAdd}
+                    isHighlighted={highlightedNode === node.id}
+                    isLastChild={isLastChild}
+                  />
+                );
+              }}
+              dragPreviewRender={(monitorProps) => (
+                <CustomDragPreview monitorProps={monitorProps} />
+              )}
+            />
+          </Box>
+          <Box className={styles.footer}>
+            <Button
+              variant="outlined"
+              onClick={() => setTreeData(initialData)}
+              className={styles.footerButton}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleSaveAll}
+              className={styles.footerButton}
+            >
+              Save
             </Button>
           </Box>
-          <Tree
-            ref={treeRef}
-            tree={treeData}
-            rootId={0}
-            initialOpen
-            onDrop={handleDrop}
-            classes={{
-              root: styles.treeRoot,
-              draggingSource: styles.draggingSource,
-              dropTarget: styles.dropTarget,
-            }}
-            render={(node, { depth, isOpen, onToggle }) => (
-              <CustomNode
-                node={node}
-                depth={depth}
-                isOpen={isOpen}
-                onToggle={onToggle}
-                isAdding={addingToParent === node.id}
-                onStartAdd={handleStartAdd}
-                onAdd={handleAddNode}
-                onCancelAdd={handleCancelAdd}
-                isHighlighted={highlightedNode === node.id}
-              />
-            )}
-            dragPreviewRender={(monitorProps) => (
-              <CustomDragPreview monitorProps={monitorProps} />
-            )}
-          />
         </Box>
       </DndProvider>
     </ThemeProvider>
