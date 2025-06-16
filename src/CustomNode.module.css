@@ -1,0 +1,38 @@
+.root {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.draggingSource {
+  opacity: 0.3;
+}
+
+.container {
+  margin: 2px 0;
+}
+
+.expandIconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.labelGridItem {
+  padding-left: 8px;
+}
+
+.addNodeForm {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.highlight {
+  background-color: #e6f7ff;
+  border: 1px solid #91d5ff;
+}
