@@ -19,7 +19,9 @@
   position: relative;
   margin-top: 16px;
   padding-left: 32px;
-  transition: opacity 0.2s ease;
+  transition: all 0.2s ease;
+  opacity: 1;
+  visibility: visible;
 }
 
 /* ✅ Horizontal line from vertical to node box */
@@ -93,18 +95,22 @@
 /* Hint box styling */
 .hintBox {
   background-color: #f5f5f5;
+  transition: all 0.2s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-.hintBox::before {
-  content: "Enter a node";
-  position: absolute;
-  left: 40px;
-  top: 50%;
-  transform: translateY(-50%);
+.hintText {
+  padding: 8px;
   color: #999;
   font-style: italic;
-  pointer-events: none;
-  z-index: 1;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  user-select: none;
+  opacity: 1;
+  visibility: visible;
+  width: 100%;
 }
 
 /* ✅ Dot (only shows on root via selector above) */
@@ -132,9 +138,16 @@
   padding: 0 8px;
 }
 
-.addButton {
+/* Add button styling */
+.addButtonWrapper {
+  position: relative;
   margin-left: 8px;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.addButton {
+  transition: transform 0.2s ease;
 }
 
 .addButton:hover {
@@ -171,11 +184,13 @@
   padding-left: 12px;
 }
 
-/* --- Highlight on newly added nodes --- */
+/* Enhanced highlight styling */
 .highlight {
   border: 1px solid #91d5ff;
   box-shadow: 0 0 0 2px rgba(145, 213, 255, 0.2);
   transition: all 0.2s ease;
+  opacity: 1;
+  visibility: visible;
 }
 
 .highlight:hover {

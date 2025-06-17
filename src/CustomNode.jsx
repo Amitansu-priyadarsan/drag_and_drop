@@ -53,13 +53,16 @@ export const CustomNode = (props) => {
 
   const handleAddButtonLeave = (e) => {
     e.stopPropagation();
+    setIsHovering(false);
     if (!isFocused) {
-      setIsHovering(false);
-      if (!newText.trim()) {
-        onCancelAdd();
-        setNewText("");
-      }
+      onCancelAdd();
+      setNewText("");
     }
+  };
+
+  const handleAddClick = (e) => {
+    e.stopPropagation();
+    setIsFocused(true);
   };
 
   const handleFocus = () => {
@@ -169,14 +172,19 @@ export const CustomNode = (props) => {
           )}
         </Box>
         
-        <IconButton 
-          size="small" 
+        <Box 
+          className={styles.addButtonWrapper}
           onMouseEnter={handleAddButtonHover}
           onMouseLeave={handleAddButtonLeave}
-          className={styles.addButton}
+          onClick={handleAddClick}
         >
-          <DiamondAddIconTransform color="#121214" />
-        </IconButton>
+          <IconButton 
+            size="small" 
+            className={styles.addButton}
+          >
+            <DiamondAddIconTransform color="#121214" />
+          </IconButton>
+        </Box>
 
         <Menu
           anchorEl={anchorEl}
@@ -195,12 +203,15 @@ export const CustomNode = (props) => {
         </Menu>
       </Box>
 
-      {isAdding && (
+      {(isHovering || isFocused) && isAdding && (
         <Box
           className={`${styles.container} ${styles.isLastChild}`}
           style={{
             marginLeft: indentPx + 48,
             "--nodeIndent": `${indentPx + 48}px`,
+            opacity: 1,
+            visibility: 'visible',
+            transition: 'all 0.2s ease',
           }}
         >
           <Box className={styles.nodeContent}>
@@ -208,33 +219,37 @@ export const CustomNode = (props) => {
               className={`
                 ${styles.nodeBox} 
                 ${styles.highlight}
-                ${isHovering && !isFocused ? styles.hintBox : ''}
+                ${!isFocused ? styles.hintBox : ''}
               `}
             >
-              <TextField
-                autoFocus
-                fullWidth
-                variant="standard"
-                size="small"
-                placeholder={isFocused ? "Enter node name..." : ""}
-                value={newText}
-                onChange={(e) => setNewText(e.target.value)}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleSave();
-                  else if (e.key === "Escape") handleCancel();
-                }}
-                InputProps={{
-                  disableUnderline: true,
-                  style: {
-                    padding: '0 8px',
-                    fontFamily: '"Inter", sans-serif',
-                    color: '#121214',
-                    fontSize: '14px',
-                  },
-                }}
-              />
+              {isFocused ? (
+                <TextField
+                  autoFocus
+                  fullWidth
+                  variant="standard"
+                  size="small"
+                  placeholder="Enter node name..."
+                  value={newText}
+                  onChange={(e) => setNewText(e.target.value)}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleSave();
+                    else if (e.key === "Escape") handleCancel();
+                  }}
+                  InputProps={{
+                    disableUnderline: true,
+                    style: {
+                      padding: '0 8px',
+                      fontFamily: '"Inter", sans-serif',
+                      color: '#121214',
+                      fontSize: '14px',
+                    },
+                  }}
+                />
+              ) : (
+                <Box className={styles.hintText}>Enter a node</Box>
+              )}
             </Box>
           </Box>
         </Box>
