@@ -1,3 +1,4 @@
+/* --- Root and Drag State Styling --- */
 .root {
   display: flex;
   align-items: center;
@@ -9,57 +10,59 @@
   opacity: 0.3;
 }
 
+.isDragging {
+  opacity: 0.5;
+}
+
+/* --- Container & Connector Layout --- */
 .container {
   position: relative;
   margin-top: 16px;
-  padding-left: 28px; /* Space for the connector */
+  padding-left: 32px; /* ✅ More space to perfectly align dot and line */
 }
 
-.nodeWrapper {
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-/* --- Connector Lines --- */
-
-/* Horizontal line from the vertical line to the node */
+/* ✅ Perfectly aligned horizontal connector line */
 .container::before {
   content: "";
   position: absolute;
-  top: 20px; /* Vertically center with node box */
-  left: 8px;
-  width: 20px; /* (padding-left - dot width/2) */
+  top: 50%;                      /* vertically center */
+  transform: translateY(-50%);
+  left: 11px;                    /* matches dot center */
+  width: 21px;                   /* reaches node box */
   height: 2px;
   background-color: #dfdfe2;
   z-index: 1;
 }
 
-/* Vertical line connecting children */
+/* Vertical connector line between siblings/children */
 .container::after {
   content: "";
   position: absolute;
-  top: -16px; /* Start from above the parent */
-  left: 8px;
+  top: -16px;
+  left: 12px;                    /* aligned slightly right to match horizontal line */
   width: 2px;
   height: calc(100% + 16px);
   background-color: #dfdfe2;
   z-index: 1;
 }
 
-/* Hide connectors for root-level nodes */
-.container[style*="margin-left: 0px"]::before,
+/* ✅ Hide only vertical line for root node */
 .container[style*="margin-left: 0px"]::after {
   display: none;
 }
 
-/* Adjust vertical line for the last child to stop at the node */
+/* --- Optional: Hide dot for root node
+.container[style*="margin-left: 0px"] .nodeBox::before {
+  display: none;
+}
+*/
+
+/* Shorten vertical line for last child node */
 .container.isLastChild::after {
-  height: 36px; /* (top offset + node top position) */
+  height: 36px;
 }
 
-/* --- Node Styling --- */
-
+/* --- Node Content Layout --- */
 .nodeContent {
   display: flex;
   align-items: center;
@@ -79,16 +82,16 @@
   color: #121214;
   font-size: 14px;
   position: relative;
-  z-index: 2; /* Ensure node is above connector lines */
+  z-index: 2;
 }
 
+/* ✅ Dot aligned with line */
 .nodeBox::before {
-  /* Connector dot */
   content: "";
   position: absolute;
-  left: -21px;
   top: 50%;
   transform: translateY(-50%);
+  left: -25px;                  /* aligned to line at left: 11px + width: 21px */
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -97,6 +100,7 @@
   z-index: 3;
 }
 
+/* --- Buttons and Text Styling --- */
 .toggleButton {
   padding: 4px;
 }
@@ -110,13 +114,10 @@
   margin-left: 8px;
 }
 
+/* --- Add Node Input Field Styling --- */
 .addNodeForm {
   margin-top: 8px;
   padding-left: 12px;
-}
-
-.isDragging {
-  opacity: 0.5;
 }
 
 .highlight {
