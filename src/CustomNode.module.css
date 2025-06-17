@@ -17,11 +17,25 @@
 /* --- Container & Connector Layout --- */
 .container {
   position: relative;
-  margin-top: 16px;
+  margin-top: 40px;
   padding-left: 32px;
   transition: all 0.2s ease;
   opacity: 1;
   visibility: visible;
+}
+
+/* First container in the tree should not have top margin */
+.container:first-of-type {
+  margin-top: 0;
+}
+
+/* Root level containers should have proper spacing */
+.container[style*="margin-left: 0px"] {
+  margin-top: 40px;
+}
+
+.container[style*="margin-left: 0px"]:first-of-type {
+  margin-top: 0;
 }
 
 /* ✅ Horizontal line from vertical to node box */
@@ -63,9 +77,9 @@
 
 /* ✅ Trim vertical line for last child */
 .container.isLastChild::after {
-  top: -16px;
-  height: 36px;
-  bottom: auto; /* override bottom: 0 from base rule */
+  top: -40px;
+  height: 60px;
+  bottom: auto;
 }
 
 /* --- Node Box Layout --- */

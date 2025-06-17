@@ -131,6 +131,7 @@ export const CustomNode = (props) => {
       style={{
         marginLeft: indentPx,
         "--nodeIndent": `${indentPx}px`,
+        marginTop: '40px',
       }}
     >
       <Box className={styles.nodeContent}>
@@ -212,6 +213,7 @@ export const CustomNode = (props) => {
             opacity: 1,
             visibility: 'visible',
             transition: 'all 0.2s ease',
+            marginTop: '40px',
           }}
         >
           <Box className={styles.nodeContent}>
