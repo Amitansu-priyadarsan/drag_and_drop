@@ -19,6 +19,7 @@
   position: relative;
   margin-top: 16px;
   padding-left: 32px;
+  transition: opacity 0.2s ease;
 }
 
 /* ✅ Horizontal line from vertical to node box */
@@ -86,6 +87,24 @@
   font-size: 14px;
   position: relative;
   z-index: 2;
+  transition: all 0.2s ease;
+}
+
+/* Hint box styling */
+.hintBox {
+  background-color: #f5f5f5;
+}
+
+.hintBox::before {
+  content: "Enter a node";
+  position: absolute;
+  left: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+  font-style: italic;
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* ✅ Dot (only shows on root via selector above) */
@@ -115,6 +134,35 @@
 
 .addButton {
   margin-left: 8px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.addButton:hover {
+  transform: scale(1.1);
+}
+
+/* Menu button styling */
+.menuButton {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  margin-left: auto;
+  padding: 4px;
+}
+
+.nodeBox:hover .menuButton {
+  opacity: 1;
+}
+
+.nodeMenu {
+  z-index: 1000;
+}
+
+/* Edit mode styling */
+.editInput {
+  padding: 0 8px !important;
+  font-family: "Inter", sans-serif !important;
+  color: #121214 !important;
+  font-size: 14px !important;
 }
 
 /* --- Add Node Input Form --- */
@@ -126,4 +174,11 @@
 /* --- Highlight on newly added nodes --- */
 .highlight {
   border: 1px solid #91d5ff;
+  box-shadow: 0 0 0 2px rgba(145, 213, 255, 0.2);
+  transition: all 0.2s ease;
+}
+
+.highlight:hover {
+  border-color: #40a9ff;
+  box-shadow: 0 0 0 2px rgba(64, 169, 255, 0.2);
 }

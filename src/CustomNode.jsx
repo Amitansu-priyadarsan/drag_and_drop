@@ -4,10 +4,15 @@ import {
   IconButton,
   Box,
   TextField,
+  Menu,
+  MenuItem,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { DiamondAddIconTransform } from "./DiamondAddIcon";
 import styles from "./CustomNode.module.css";
 
 export const CustomNode = (props) => {
@@ -22,28 +27,95 @@ export const CustomNode = (props) => {
     onCancelAdd,
     isLastChild,
     isDragging,
+    onDelete,
+    onEdit,
   } = props;
 
   const [newText, setNewText] = useState("");
+  const [isHovering, setIsHovering] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editText, setEditText] = useState(text);
+  
   const indentPx = depth * 48;
 
   const handleToggle = (e) => {
     e.stopPropagation();
     onToggle(id);
   };
-  const handleAddClick = (e) => {
+
+  const handleAddButtonHover = (e) => {
     e.stopPropagation();
+    setIsHovering(true);
     onStartAdd(id);
   };
+
+  const handleAddButtonLeave = (e) => {
+    e.stopPropagation();
+    if (!isFocused) {
+      setIsHovering(false);
+      if (!newText.trim()) {
+        onCancelAdd();
+        setNewText("");
+      }
+    }
+  };
+
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+    if (!newText.trim()) {
+      handleCancel();
+    }
+  };
+
   const handleSave = () => {
     if (newText) {
       onAdd(id, newText);
       setNewText("");
+      setIsHovering(false);
+      setIsFocused(false);
     }
   };
+
   const handleCancel = () => {
     onCancelAdd();
     setNewText("");
+    setIsHovering(false);
+    setIsFocused(false);
+  };
+
+  // Menu handlers
+  const handleMenuOpen = (event) => {
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+    handleMenuClose();
+  };
+
+  const handleDeleteClick = () => {
+    if (onDelete) {
+      onDelete(id);
+    }
+    handleMenuClose();
+  };
+
+  const handleEditSave = () => {
+    if (editText && editText !== text && onEdit) {
+      onEdit(id, editText);
+    }
+    setIsEditing(false);
   };
 
   return (
@@ -51,7 +123,7 @@ export const CustomNode = (props) => {
       className={`
         ${styles.container}
         ${isLastChild ? styles.isLastChild : ""}
-        ${isDragging  ? styles.isDragging  : ""}
+        ${isDragging ? styles.isDragging : ""}
       `}
       style={{
         marginLeft: indentPx,
@@ -63,13 +135,64 @@ export const CustomNode = (props) => {
           <IconButton size="small" onClick={handleToggle} className={styles.toggleButton}>
             {droppable && (isOpen ? <ExpandMoreIcon /> : <ChevronRightIcon />)}
           </IconButton>
-          <Typography variant="body2" className={styles.nodeText}>
-            {text}
-          </Typography>
+          
+          {isEditing ? (
+            <TextField
+              autoFocus
+              fullWidth
+              variant="standard"
+              value={editText}
+              onChange={(e) => setEditText(e.target.value)}
+              onBlur={handleEditSave}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleEditSave();
+                else if (e.key === "Escape") setIsEditing(false);
+              }}
+              InputProps={{
+                disableUnderline: true,
+                className: styles.editInput
+              }}
+            />
+          ) : (
+            <>
+              <Typography variant="body2" className={styles.nodeText}>
+                {text}
+              </Typography>
+              <IconButton
+                size="small"
+                className={styles.menuButton}
+                onClick={handleMenuOpen}
+              >
+                <MoreVertIcon fontSize="small" />
+              </IconButton>
+            </>
+          )}
         </Box>
-        <IconButton size="small" onClick={handleAddClick} className={styles.addButton}>
-          <AddIcon />
+        
+        <IconButton 
+          size="small" 
+          onMouseEnter={handleAddButtonHover}
+          onMouseLeave={handleAddButtonLeave}
+          className={styles.addButton}
+        >
+          <DiamondAddIconTransform color="#121214" />
         </IconButton>
+
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+          className={styles.nodeMenu}
+        >
+          <MenuItem onClick={handleEditClick}>
+            <EditIcon fontSize="small" sx={{ mr: 1 }} />
+            Edit
+          </MenuItem>
+          <MenuItem onClick={handleDeleteClick}>
+            <DeleteIcon fontSize="small" sx={{ mr: 1 }} />
+            Delete
+          </MenuItem>
+        </Menu>
       </Box>
 
       {isAdding && (
@@ -81,16 +204,23 @@ export const CustomNode = (props) => {
           }}
         >
           <Box className={styles.nodeContent}>
-            <Box className={`${styles.nodeBox} ${styles.highlight}`}>
+            <Box 
+              className={`
+                ${styles.nodeBox} 
+                ${styles.highlight}
+                ${isHovering && !isFocused ? styles.hintBox : ''}
+              `}
+            >
               <TextField
                 autoFocus
                 fullWidth
                 variant="standard"
                 size="small"
-                placeholder="Enter node name..."
+                placeholder={isFocused ? "Enter node name..." : ""}
                 value={newText}
                 onChange={(e) => setNewText(e.target.value)}
-                onBlur={handleSave}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleSave();
                   else if (e.key === "Escape") handleCancel();
