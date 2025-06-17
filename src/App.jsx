@@ -23,9 +23,25 @@ function App() {
   const [treeData, setTreeData] = useState(initialData);
   const [addingToParent, setAddingToParent] = useState(null);
   const [highlightedNode, setHighlightedNode] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
   const treeRef = useRef(null);
 
   const handleDrop = (newTree) => setTreeData(newTree);
+
+  const handleDragStart = () => setIsDragging(true);
+  const handleDragEnd = () => setIsDragging(false);
+
+  const handleDeleteNode = (id) => {
+    const newTree = treeData.filter(node => node.id !== id);
+    setTreeData(newTree);
+  };
+
+  const handleEditNode = (id, newText) => {
+    const newTree = treeData.map(node => 
+      node.id === id ? { ...node, text: newText } : node
+    );
+    setTreeData(newTree);
+  };
 
   const handleSaveAll = async () => {
     try {
@@ -91,12 +107,13 @@ function App() {
               rootId={0}
               initialOpen
               onDrop={handleDrop}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
               classes={{
                 root: styles.treeRoot,
                 draggingSource: styles.draggingSource,
-                dropTarget: styles.dropTarget,
               }}
-              render={(node, { depth, isOpen, onToggle }) => {
+              render={(node, { depth, isOpen, onToggle, isDropTarget }) => {
                 const children = treeData.filter((n) => n.parent === node.parent);
                 const isLastChild = children[children.length - 1].id === node.id;
 
@@ -112,6 +129,10 @@ function App() {
                     onCancelAdd={handleCancelAdd}
                     isHighlighted={highlightedNode === node.id}
                     isLastChild={isLastChild}
+                    isDragging={isDragging}
+                    onDelete={handleDeleteNode}
+                    onEdit={handleEditNode}
+                    isDropTarget={isDropTarget}
                   />
                 );
               }}

@@ -29,6 +29,7 @@ export const CustomNode = (props) => {
     isDragging,
     onDelete,
     onEdit,
+    isDropTarget,
   } = props;
 
   const [newText, setNewText] = useState("");
@@ -203,6 +204,30 @@ export const CustomNode = (props) => {
           </MenuItem>
         </Menu>
       </Box>
+
+      {isDropTarget && (
+        <Box
+          className={`${styles.container} ${styles.isLastChild}`}
+          style={{
+            marginLeft: indentPx + 48,
+            "--nodeIndent": `${indentPx + 48}px`,
+            opacity: 1,
+            visibility: 'visible',
+            transition: 'all 0.2s ease',
+            marginTop: '8px',
+          }}
+        >
+          <Box className={styles.nodeContent}>
+            <Box 
+              className={`${styles.nodeBox} ${styles.dropPreview}`}
+            >
+              <Typography variant="body2" className={styles.hintText}>
+                Drop here
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+      )}
 
       {(isHovering || isFocused) && isAdding && (
         <Box

@@ -211,3 +211,20 @@
   border-color: #40a9ff;
   box-shadow: 0 0 0 2px rgba(64, 169, 255, 0.2);
 }
+
+/* Drop Preview styling */
+.dropPreview {
+  opacity: 0.8;
+  border: 2px dashed #1890ff;
+  background-color: #e6f7ff;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropPreview .hintText {
+  color: #1890ff;
+  font-weight: 500;
+  font-style: normal;
+}
