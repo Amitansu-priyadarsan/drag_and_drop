@@ -18,51 +18,54 @@
 .container {
   position: relative;
   margin-top: 16px;
-  padding-left: 32px; /* ✅ More space to perfectly align dot and line */
+  padding-left: 32px;
 }
 
-/* ✅ Perfectly aligned horizontal connector line */
+/* ✅ Horizontal line from vertical to node box */
 .container::before {
   content: "";
   position: absolute;
-  top: 50%;                      /* vertically center */
-  transform: translateY(-50%);
-  left: 11px;                    /* matches dot center */
-  width: 21px;                   /* reaches node box */
+  top: 20px;              /* middle of nodeBox height (40px) */
+  left: 12px;
+  width: 21px;
   height: 2px;
   background-color: #dfdfe2;
   z-index: 1;
 }
 
-/* Vertical connector line between siblings/children */
+/* ✅ Vertical line from top to bottom of container */
 .container::after {
   content: "";
   position: absolute;
-  top: -16px;
-  left: 12px;                    /* aligned slightly right to match horizontal line */
+  top: 0;
+  bottom: 0;
+  left: 12px;
   width: 2px;
-  height: calc(100% + 16px);
   background-color: #dfdfe2;
   z-index: 1;
 }
 
-/* ✅ Hide only vertical line for root node */
+/* ✅ Hide vertical line for root nodes */
 .container[style*="margin-left: 0px"]::after {
   display: none;
 }
 
-/* --- Optional: Hide dot for root node
+/* ✅ Dot only on root nodes */
 .container[style*="margin-left: 0px"] .nodeBox::before {
+  display: block;
+}
+.container:not([style*="margin-left: 0px"]) .nodeBox::before {
   display: none;
 }
-*/
 
-/* Shorten vertical line for last child node */
+/* ✅ Trim vertical line for last child */
 .container.isLastChild::after {
+  top: -16px;
   height: 36px;
+  bottom: auto; /* override bottom: 0 from base rule */
 }
 
-/* --- Node Content Layout --- */
+/* --- Node Box Layout --- */
 .nodeContent {
   display: flex;
   align-items: center;
@@ -85,13 +88,13 @@
   z-index: 2;
 }
 
-/* ✅ Dot aligned with line */
+/* ✅ Dot (only shows on root via selector above) */
 .nodeBox::before {
   content: "";
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  left: -25px;                  /* aligned to line at left: 11px + width: 21px */
+  left: -25px;
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -100,7 +103,7 @@
   z-index: 3;
 }
 
-/* --- Buttons and Text Styling --- */
+/* --- Buttons and Text --- */
 .toggleButton {
   padding: 4px;
 }
@@ -114,12 +117,13 @@
   margin-left: 8px;
 }
 
-/* --- Add Node Input Field Styling --- */
+/* --- Add Node Input Form --- */
 .addNodeForm {
   margin-top: 8px;
   padding-left: 12px;
 }
 
+/* --- Highlight on newly added nodes --- */
 .highlight {
   background-color: #e6f7ff;
   border: 1px solid #91d5ff;
