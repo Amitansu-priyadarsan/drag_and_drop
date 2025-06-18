@@ -230,9 +230,8 @@
 
 /* Drop Preview styling */
 .dropPreview {
-  opacity: 0.8;
-  border: 2px dashed #1890ff;
-  background-color: #e6f7ff;
+  background-color: #F8F8FB;
+  border: 1px dashed #D3D3D5;
   pointer-events: none;
   display: flex;
   align-items: center;
@@ -240,9 +239,9 @@
 }
 
 .dropPreview .hintText {
-  color: #1890ff;
-  font-weight: 500;
-  font-style: normal;
+  color: #999;
+  font-style: italic;
+  font-weight: normal;
 }
 
 .floatingMenu {

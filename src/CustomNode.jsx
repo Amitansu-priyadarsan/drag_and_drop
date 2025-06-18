@@ -200,7 +200,7 @@ export const CustomNode = (props) => {
               className={`${styles.nodeBox} ${styles.dropPreview}`}
             >
               <Typography variant="body2" className={styles.hintText}>
-                Drop here
+               
               </Typography>
             </Box>
           </Box>
