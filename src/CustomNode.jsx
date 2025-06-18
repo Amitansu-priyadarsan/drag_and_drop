@@ -222,9 +222,8 @@ export const CustomNode = (props) => {
           <Box className={styles.nodeContent}>
             <Box 
               className={`
-                ${styles.nodeBox} 
-                ${styles.highlight}
-                ${!isFocused ? styles.hintBox : ''}
+                ${styles.addNodeBox} 
+                ${isFocused ? styles.highlight : styles.hintBox}
               `}
             >
               <TextField
@@ -232,8 +231,8 @@ export const CustomNode = (props) => {
                 fullWidth
                 variant="standard"
                 size="small"
-                placeholder="Enter node name..."
-                value={isFocused ? newText : "Enter a node"}
+                
+                value={isFocused ? newText : ""}
                 onChange={(e) => setNewText(e.target.value)}
                 onFocus={handleFocus}
                 onBlur={handleBlur}

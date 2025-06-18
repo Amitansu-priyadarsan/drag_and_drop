@@ -109,14 +109,27 @@
   gap: 8px;
 }
 
-/* Hint box styling */
-.hintBox {
-  background-color: #f5f5f5;
-  transition: all 0.2s ease;
-  position: relative;
+.addNodeBox {
   display: flex;
   align-items: center;
-  padding: 4px;
+  background-color: white;
+  height: 40px;
+  width: 264px;
+  font-family: "Inter", sans-serif;
+  color: #121214;
+  font-size: 14px;
+  position: relative;
+  z-index: 2;
+  transition: all 0.2s ease;
+  padding: 0 12px;
+  border-radius: 8px;
+  gap: 8px;
+}
+
+/* Hint box styling */
+.hintBox {
+  background-color: #F8F8FB;
+  border: 1px dashed #D3D3D5;
 }
 
 .hintText {
