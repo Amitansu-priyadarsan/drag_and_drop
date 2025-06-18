@@ -4,14 +4,11 @@ import {
   IconButton,
   Box,
   TextField,
-  Menu,
-  MenuItem,
 } from "@mui/material";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { DiamondAddIconTransform } from "./DiamondAddIcon";
 import styles from "./CustomNode.module.css";
 
@@ -35,7 +32,6 @@ export const CustomNode = (props) => {
   const [newText, setNewText] = useState("");
   const [isHovering, setIsHovering] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(text);
   
@@ -93,26 +89,14 @@ export const CustomNode = (props) => {
     setIsFocused(false);
   };
 
-  // Menu handlers
-  const handleMenuOpen = (event) => {
-    event.stopPropagation();
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
   const handleEditClick = () => {
     setIsEditing(true);
-    handleMenuClose();
   };
 
   const handleDeleteClick = () => {
     if (onDelete) {
       onDelete(id);
     }
-    handleMenuClose();
   };
 
   const handleEditSave = () => {
@@ -163,13 +147,23 @@ export const CustomNode = (props) => {
               <Typography variant="body2" className={styles.nodeText}>
                 {text}
               </Typography>
-              <IconButton
-                size="small"
-                className={styles.menuButton}
-                onClick={handleMenuOpen}
-              >
-                <MoreVertIcon fontSize="small" />
-              </IconButton>
+              <Box className={styles.floatingMenu}>
+                <IconButton
+                  size="small"
+                  onClick={handleEditClick}
+                  sx={{ color: "#F8F8FB" }}
+                >
+                  <EditIcon fontSize="small" />
+                </IconButton>
+                <Box className={styles.divider} />
+                <IconButton
+                  size="small"
+                  onClick={handleDeleteClick}
+                  sx={{ color: "#F8F8FB" }}
+                >
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              </Box>
             </>
           )}
         </Box>
@@ -187,22 +181,6 @@ export const CustomNode = (props) => {
             <DiamondAddIconTransform color="#121214" />
           </IconButton>
         </Box>
-
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-          className={styles.nodeMenu}
-        >
-          <MenuItem onClick={handleEditClick}>
-            <EditIcon fontSize="small" sx={{ mr: 1 }} />
-            Edit
-          </MenuItem>
-          <MenuItem onClick={handleDeleteClick}>
-            <DeleteIcon fontSize="small" sx={{ mr: 1 }} />
-            Delete
-          </MenuItem>
-        </Menu>
       </Box>
 
       {isDropTarget && (
@@ -249,34 +227,33 @@ export const CustomNode = (props) => {
                 ${!isFocused ? styles.hintBox : ''}
               `}
             >
-              {isFocused ? (
-                <TextField
-                  autoFocus
-                  fullWidth
-                  variant="standard"
-                  size="small"
-                  placeholder="Enter node name..."
-                  value={newText}
-                  onChange={(e) => setNewText(e.target.value)}
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") handleSave();
-                    else if (e.key === "Escape") handleCancel();
-                  }}
-                  InputProps={{
-                    disableUnderline: true,
-                    style: {
-                      padding: '0 8px',
-                      fontFamily: '"Inter", sans-serif',
-                      color: '#121214',
-                      fontSize: '14px',
-                    },
-                  }}
-                />
-              ) : (
-                <Box className={styles.hintText}>Enter a node</Box>
-              )}
+              <TextField
+                autoFocus={isFocused}
+                fullWidth
+                variant="standard"
+                size="small"
+                placeholder="Enter node name..."
+                value={isFocused ? newText : "Enter a node"}
+                onChange={(e) => setNewText(e.target.value)}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSave();
+                  else if (e.key === "Escape") handleCancel();
+                }}
+                InputProps={{
+                  disableUnderline: true,
+                  readOnly: !isFocused,
+                  style: {
+                    padding: '0 8px',
+                    fontFamily: '"Inter", sans-serif',
+                    color: isFocused ? '#121214' : '#999',
+                    fontSize: '14px',
+                    fontStyle: isFocused ? 'normal' : 'italic',
+                    cursor: 'text',
+                  },
+                }}
+              />
             </Box>
           </Box>
         </Box>

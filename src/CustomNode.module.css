@@ -227,3 +227,32 @@
   font-weight: 500;
   font-style: normal;
 }
+
+.floatingMenu {
+  position: absolute;
+  top: -48px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #171719;
+  border-radius: 8px;
+  box-shadow: 0px 8px 12px rgba(18, 18, 20, 0.12);
+  border: 1px solid rgba(248, 248, 251, 0.1);
+  padding: 6px;
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.nodeBox:hover .floatingMenu {
+  opacity: 1;
+  visibility: visible;
+}
+
+.divider {
+  width: 1px;
+  height: 16px;
+  background-color: rgba(248, 248, 251, 0.2);
+}
