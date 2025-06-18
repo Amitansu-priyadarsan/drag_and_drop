@@ -54,10 +54,11 @@
 .container::after {
   content: "";
   position: absolute;
-  top: 0;
-  bottom: 0;
+  top: -40px; /* Start from the top of the margin */
+  bottom: auto;
   left: 12px;
   width: 2px;
+  height: calc(100% + 40px - 20px); /* Fill margin and container down to node center */
   background-color: #dfdfe2;
   z-index: 1;
 }
@@ -77,9 +78,7 @@
 
 /* ✅ Trim vertical line for last child */
 .container.isLastChild::after {
-  top: -40px;
-  height: 60px;
-  bottom: auto;
+  height: 60px; /* (margin-top) 40px + (half-node-height) 20px */
 }
 
 /* --- Node Box Layout --- */
