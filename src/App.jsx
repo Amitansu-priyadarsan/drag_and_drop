@@ -14,79 +14,78 @@ import {
 } from "@minoru/react-dnd-treeview";
 import { CustomNode } from "./CustomNode";
 import { CustomDragPreview } from "./CustomDragPreview";
+import ConnectorOverlay from "./ConnectorOverlay";
 import { theme } from "./theme";
 import styles from "./App.module.css";
 import initialData from "./sample_data.json";
 import { saveTree } from "./api";
+
+export const CONNECTOR_GAP = 12;   // same number you used in CSS
 
 function App() {
   const [treeData, setTreeData] = useState(initialData);
   const [addingToParent, setAddingToParent] = useState(null);
   const [highlightedNode, setHighlightedNode] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
-  const treeRef = useRef(null);
 
-  const handleDrop = (newTree) => setTreeData(newTree);
+  const treeRef        = useRef(null);
+  const containerRef   = useRef(null);        // <Box className={styles.treeContainer}>
+  const nodeRefs       = useRef({});          // { [id]: DOMElement }
 
-  const handleDragStart = () => setIsDragging(true);
-  const handleDragEnd = () => setIsDragging(false);
+  /* --- DnD handlers ---------------------------------------------- */
+  const handleDrop       = (newTree) => setTreeData(newTree);
+  const handleDragStart  = () => setIsDragging(true);
+  const handleDragEnd    = () => setIsDragging(false);
 
-  const handleDeleteNode = (id) => {
-    const newTree = treeData.filter(node => node.id !== id);
-    setTreeData(newTree);
-  };
+  /* --- CRUD ------------------------------------------------------- */
+  const handleDeleteNode = (id) =>
+    setTreeData((t) => t.filter((n) => n.id !== id));
 
-  const handleEditNode = (id, newText) => {
-    const newTree = treeData.map(node => 
-      node.id === id ? { ...node, text: newText } : node
-    );
-    setTreeData(newTree);
-  };
+  const handleEditNode   = (id, text) =>
+    setTreeData((t) => t.map((n) => (n.id === id ? { ...n, text } : n)));
 
-  const handleSaveAll = async () => {
+  const handleSaveAll    = async () => {
     try {
       await saveTree(treeData);
-      // You can add a success notification here, e.g., using a snackbar.
       alert("Tree structure saved successfully!");
-    } catch (error) {
-      // You can add an error notification here.
+    } catch (err) {
       alert("Failed to save tree structure.");
-      console.error(error);
+      console.error(err);
     }
   };
 
-  const handleStartAdd = (parentId) => {
+  const handleStartAdd   = (parentId) => {
     setAddingToParent(parentId);
     treeRef.current?.open(parentId);
   };
-
-  const handleCancelAdd = () => {
-    setAddingToParent(null);
-  };
+  const handleCancelAdd  = () => setAddingToParent(null);
 
   const handleAddNode = (parentId, text) => {
     const newNode = {
-      id: Date.now(), // In a real app, use a more robust ID generation.
+      id: Date.now(),
       parent: parentId,
       text,
       droppable: true,
     };
-
-    setTreeData([...treeData, newNode]);
+    setTreeData((t) => [...t, newNode]);
     setAddingToParent(null);
-
-    // Highlight the new node briefly
     setHighlightedNode(newNode.id);
-    setTimeout(() => {
-      setHighlightedNode(null);
-    }, 2000); // Highlight for 2 seconds
+    setTimeout(() => setHighlightedNode(null), 2000);
   };
 
+  /* --- helper to attach a ref per node ---------------------------- */
+  const bindNodeRef = (id) => (el) => {
+    if (el) nodeRefs.current[id] = el;
+    else delete nodeRefs.current[id];             // cleanup on unmount
+  };
+
+  /* --- render ----------------------------------------------------- */
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <DndProvider backend={MultiBackend} options={getBackendOptions()}>
         <Box className={styles.app}>
+          {/* ---------- header ------------------------------------ */}
           <Box className={styles.header}>
             <Typography variant="h6" className={styles.headerTitle}>
               Hierarchy tree
@@ -100,7 +99,22 @@ function App() {
               </Typography>
             </Box>
           </Box>
-          <Box className={styles.treeContainer}>
+
+          {/* ---------- tree  ------------------------------------- */}
+          <Box
+            ref={containerRef}
+            className={styles.treeContainer}
+            sx={{ position: "relative" }}        /* needed for absolute SVG */
+          >
+            {/* SVG underlay */}
+            <ConnectorOverlay
+              gap={CONNECTOR_GAP}
+              treeData={treeData}
+              nodeRefs={nodeRefs}
+              containerRef={containerRef}
+            />
+
+            {/* Actual interactive tree */}
             <Tree
               ref={treeRef}
               tree={treeData}
@@ -114,11 +128,12 @@ function App() {
                 draggingSource: styles.draggingSource,
               }}
               render={(node, { depth, isOpen, onToggle, isDropTarget }) => {
-                const children = treeData.filter((n) => n.parent === node.parent);
-                const isLastChild = children[children.length - 1].id === node.id;
+                const siblings   = treeData.filter((n) => n.parent === node.parent);
+                const isLastChild = siblings[siblings.length - 1].id === node.id;
 
                 return (
                   <CustomNode
+                    ref={bindNodeRef(node.id)}
                     node={node}
                     depth={depth}
                     isOpen={isOpen}
@@ -141,6 +156,8 @@ function App() {
               )}
             />
           </Box>
+
+          {/* ---------- footer ------------------------------------ */}
           <Box className={styles.footer}>
             <Button
               variant="outlined"

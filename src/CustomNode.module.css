@@ -20,8 +20,6 @@
   margin-top: 40px;
   padding-left: 32px;
   transition: all 0.2s ease;
-  opacity: 1;
-  visibility: visible;
 }
 
 /* First container in the tree should not have top margin */
@@ -38,31 +36,6 @@
   margin-top: 0;
 }
 
-/* ✅ Horizontal line from vertical to node box */
-.container::before {
-  content: "";
-  position: absolute;
-  top: 20px;              /* middle of nodeBox height (40px) */
-  left: 12px;
-  width: 21px;
-  height: 2px;
-  background-color: #dfdfe2;
-  z-index: 1;
-}
-
-/* ✅ Vertical line from top to bottom of container */
-.container::after {
-  content: "";
-  position: absolute;
-  top: -40px; /* Start from the top of the margin */
-  bottom: auto;
-  left: 12px;
-  width: 2px;
-  height: calc(100% + 40px - 20px); /* Fill margin and container down to node center */
-  background-color: #dfdfe2;
-  z-index: 1;
-}
-
 /* ✅ Hide vertical line for root nodes */
 .container[style*="margin-left: 0px"]::after {
   display: none;
@@ -74,11 +47,6 @@
 }
 .container:not([style*="margin-left: 0px"]) .nodeBox::before {
   display: none;
-}
-
-/* ✅ Trim vertical line for last child */
-.container.isLastChild::after {
-  height: 60px; /* (margin-top) 40px + (half-node-height) 20px */
 }
 
 /* --- Node Box Layout --- */
@@ -271,4 +239,16 @@
   width: 1px;
   height: 16px;
   background-color: rgba(248, 248, 251, 0.2);
+}
+
+/* -- horizontal stub from dot ➜ card (root rows only) ------------- */
+.container[style*="margin-left: 0px"] .nodeBox::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: -12px;                /* length == GAP in JS */
+  width: 12px;
+  height: 2px;
+  background: #DFDFE2;
 }
