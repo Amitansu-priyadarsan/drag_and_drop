@@ -43,6 +43,7 @@
 .treeContainer {
   flex-grow: 1;
   overflow-y: auto;
+  padding-left: 12px;
 }
 
 .treeRoot {

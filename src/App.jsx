@@ -112,7 +112,8 @@ function App() {
               treeData={treeData}
               nodeRefs={nodeRefs}
               containerRef={containerRef}
-              addingId={addingToParent}   
+              addingId={addingToParent}
+              isDragging={isDragging}
             />
 
             {/* Actual interactive tree */}

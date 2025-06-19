@@ -13,6 +13,7 @@ export default function ConnectorOverlay({
   containerRef,
   gap,
   addingId,        // ←★ new
+  isDragging,               // ←★ new
 }) {
   const GAP = gap ?? 12;  // ←★ use prop or fallback to 12
   const [paths, setPaths] = useState([]);
@@ -105,6 +106,24 @@ export default function ConnectorOverlay({
       window.removeEventListener("resize", update);
     };
   }, [treeData, nodeRefs, containerRef]);
+
+  /* --------------------------------------------------------------
+   * While a node is being dragged we need to update every frame
+   * because the DOM transforms but treeData does not change.
+   * -------------------------------------------------------------- */
+  const dragLoop = useRef(null);
+  useLayoutEffect(() => {
+    if (!isDragging) {
+      cancelAnimationFrame(dragLoop.current);
+      return;
+    }
+    const tick = () => {
+      update();                       // recompute paths
+      dragLoop.current = requestAnimationFrame(tick);
+    };
+    tick();                           // start loop
+    return () => cancelAnimationFrame(dragLoop.current);
+  }, [isDragging]);                   // runs only on start / end
 
   return (
     <svg
