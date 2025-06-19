@@ -252,3 +252,16 @@
   height: 2px;
   background: #DFDFE2;
 }
+
+/* dashed add‑child box: let the elbow peek under its left edge */
+.addNodeBox::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: -12px;                /* same as GAP */
+  width: 12px;                /* draws only the straight stub */
+  height: 2px;
+  background: #DFDFE2;
+  pointer-events: none;
+}

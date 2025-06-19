@@ -112,6 +112,7 @@ function App() {
               treeData={treeData}
               nodeRefs={nodeRefs}
               containerRef={containerRef}
+              addingId={addingToParent}   
             />
 
             {/* Actual interactive tree */}

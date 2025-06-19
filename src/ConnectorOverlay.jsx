@@ -7,7 +7,13 @@ const RADIUS = 12;  // ←★ elbow corner radius
  * between every node and its parent.  It is completely presentation‑only:
  * no state mutations, no DOM queries inside <Tree>.
  */
-export default function ConnectorOverlay({ treeData, nodeRefs, containerRef, gap }) {
+export default function ConnectorOverlay({
+  treeData,
+  nodeRefs,
+  containerRef,
+  gap,
+  addingId,        // ←★ new
+}) {
   const GAP = gap ?? 12;  // ←★ use prop or fallback to 12
   const [paths, setPaths] = useState([]);
   const raf = useRef(null);
@@ -52,11 +58,39 @@ export default function ConnectorOverlay({ treeData, nodeRefs, containerRef, gap
         next.push({ d: d.replace(/\s+/g, " ") });
       });
 
+      /* --------------------------------------------------------------
+       * 2) placeholders that are shown while the user is adding a node
+       * -------------------------------------------------------------- */
+      const phEls = containerRef.current.querySelectorAll(
+        "[data-placeholder-parent]"
+      );
+
+      phEls.forEach((ph) => {
+        const parentId = Number(ph.getAttribute("data-placeholder-parent"));
+        const parentEl = nodeRefs.current[parentId];
+        if (!parentEl) return;                     // parent collapsed or missing
+
+        const pr = parentEl.getBoundingClientRect();
+        const cr = ph.getBoundingClientRect();
+
+        const colX = cr.left - cRect.left - GAP;
+        const pY   = pr.top  - cRect.top  + pr.height / 2;
+        const cY   = cr.top  - cRect.top  + cr.height / 2;
+
+        const d = `M ${colX} ${pY}
+                   V ${cY - RADIUS}
+                   Q ${colX} ${cY} ${colX + RADIUS} ${cY}
+                   H ${colX + GAP}`;
+
+        next.push({ d: d.replace(/\s+/g, " ") });
+      });
+
       setPaths(next);
     });
   };
 
-  useLayoutEffect(update, [treeData]);            // redraw when nodes array mutates
+  // redraw when nodes change *or* placeholder mounts/unmounts
+  useLayoutEffect(update, [treeData, addingId]);
 
   useLayoutEffect(() => {
     if (!containerRef.current) return;

@@ -211,6 +211,7 @@ export const CustomNode = forwardRef(function CustomNode(props, ref) {
         >
           <Box className={styles.nodeContent}>
             <Box
+              data-placeholder-parent={id} 
               className={`
                 ${styles.addNodeBox}
                 ${isFocused ? styles.highlight : styles.hintBox}
