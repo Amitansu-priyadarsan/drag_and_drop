@@ -1,0 +1,5 @@
+.container {
+  width: 572px; /* From image inspection */
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+} 

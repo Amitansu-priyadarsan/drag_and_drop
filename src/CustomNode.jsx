@@ -10,14 +10,16 @@ import {
   IconButton,
   Box,
   TextField,
+  Drawer,
 } from "@mui/material";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { DiamondAddIconTransform } from "./DiamondAddIcon";
-import { AssignRestaurantsIcon } from "./AssignRestaurantsIcon";
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import styles from "./CustomNode.module.css";
+import AssignLocationPanel from "./AssignLocationPanel";
 
 /**
  * Presentation component for one tree node.
@@ -46,6 +48,7 @@ export const CustomNode = forwardRef(function CustomNode(props, ref) {
   const [isFocused, setIsFocused] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(text);
+  const [isAssigningLocation, setIsAssigningLocation] = useState(false);
 
   const indentPx = depth * 48;
 
@@ -102,9 +105,11 @@ export const CustomNode = forwardRef(function CustomNode(props, ref) {
     setIsFocused(false);
   };
 
-  const handleAssignClick = () => console.log("Assign clicked");
-
   const handleEditClick = () => setIsEditing(true);
+
+  const handleAssignLocationClick = () => setIsAssigningLocation(true);
+
+  const handleAssignLocationClose = () => setIsAssigningLocation(false);
 
   const handleDeleteClick = () => onDelete && onDelete(id);
 
@@ -159,15 +164,7 @@ export const CustomNode = forwardRef(function CustomNode(props, ref) {
                 {text}
               </Typography>
               <Box className={styles.iconContainer}>
-                <Box className={styles.assignIconWrapper}>
-                  <IconButton
-                    size="small"
-                    onClick={handleAssignClick}
-                    sx={{ color: "#F8F8FB" }}
-                  >
-                    <AssignRestaurantsIcon />
-                  </IconButton>
-                </Box>
+               
                 <Box className={styles.floatingMenu}>
                   <IconButton
                     size="small"
@@ -183,6 +180,13 @@ export const CustomNode = forwardRef(function CustomNode(props, ref) {
                     sx={{ color: "#F8F8FB" }}
                   >
                     <DeleteIcon fontSize="small" />
+                  </IconButton>
+                  <IconButton
+                    size="small"
+                    onClick={handleAssignLocationClick}
+                    sx={{ color: "#F8F8FB" }}
+                  >
+                    <LocationOnIcon  fontSize="small" />
                   </IconButton>
                 </Box>
               </Box>
@@ -261,6 +265,13 @@ export const CustomNode = forwardRef(function CustomNode(props, ref) {
           </Box>
         </Box>
       )}
+      <Drawer
+        anchor="right"
+        open={isAssigningLocation}
+        onClose={handleAssignLocationClose}
+      >
+        <AssignLocationPanel onClose={handleAssignLocationClose} />
+      </Drawer>
     </Box>
   );
 });
