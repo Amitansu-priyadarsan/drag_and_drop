@@ -16,6 +16,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { DiamondAddIconTransform } from "./DiamondAddIcon";
+import { AssignRestaurantsIcon } from "./AssignRestaurantsIcon";
 import styles from "./CustomNode.module.css";
 
 /**
@@ -101,6 +102,8 @@ export const CustomNode = forwardRef(function CustomNode(props, ref) {
     setIsFocused(false);
   };
 
+  const handleAssignClick = () => console.log("Assign clicked");
+
   const handleEditClick = () => setIsEditing(true);
 
   const handleDeleteClick = () => onDelete && onDelete(id);
@@ -155,22 +158,33 @@ export const CustomNode = forwardRef(function CustomNode(props, ref) {
               <Typography variant="body2" className={styles.nodeText}>
                 {text}
               </Typography>
-              <Box className={styles.floatingMenu}>
-                <IconButton
-                  size="small"
-                  onClick={handleEditClick}
-                  sx={{ color: "#F8F8FB" }}
-                >
-                  <EditIcon fontSize="small" />
-                </IconButton>
-                <Box className={styles.divider} />
-                <IconButton
-                  size="small"
-                  onClick={handleDeleteClick}
-                  sx={{ color: "#F8F8FB" }}
-                >
-                  <DeleteIcon fontSize="small" />
-                </IconButton>
+              <Box className={styles.iconContainer}>
+                <Box className={styles.assignIconWrapper}>
+                  <IconButton
+                    size="small"
+                    onClick={handleAssignClick}
+                    sx={{ color: "#F8F8FB" }}
+                  >
+                    <AssignRestaurantsIcon />
+                  </IconButton>
+                </Box>
+                <Box className={styles.floatingMenu}>
+                  <IconButton
+                    size="small"
+                    onClick={handleEditClick}
+                    sx={{ color: "#F8F8FB" }}
+                  >
+                    <EditIcon fontSize="small" />
+                  </IconButton>
+                  <Box className={styles.divider} />
+                  <IconButton
+                    size="small"
+                    onClick={handleDeleteClick}
+                    sx={{ color: "#F8F8FB" }}
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </Box>
               </Box>
             </>
           )}
